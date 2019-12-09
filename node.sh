@@ -21,6 +21,8 @@ Notification="${Yellow}[Notification]${Font}"
 #IP and config
 #IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
 config="/root/shadowsocks/userapiconfig.py"
+Github="https://github.com/tonydan6324/ssrmu.git"
+Libsodiumr_file="/usr/local/lib/libsodium.so"
 get_ip(){
 	ip=$(curl -s https://ipinfo.io/ip)
 	[[ -z $ip ]] && ip=$(curl -s https://api.ip.sb/ip)
@@ -51,12 +53,12 @@ check_system(){
 	bit=`uname -m`
 	#res = $(cat /etc/redhat-release | awk '{print $4}')
 	#if [[ ${release} == "centos" ]] && [[ ${bit} == "x86_64" ]] && [[ ${res} -ge 7 ]]; then
-	if [[ ${release} == "centos" ]] && [[ ${bit} == "x86_64" ]]; then
-	echo -e "你的系统为[${release} ${bit}],检测${Green} 可以 ${Font}搭建。"
-	else 
+	if [[ ${release} == "centos" ]] && [[ ${res} -eq 6 ]]; then
 	echo -e "你的系统为[${release} ${bit}],检测${Red} 不可以 ${Font}搭建。"
-	echo -e "${Yellow} 正在退出脚本... ${Font}"
+	echo -e "请选择${Yellow} Centos7.x / Debian / Ubuntu ${Font}搭建"
 	exit 0;
+	else
+	echo -e "你的系统为[${release} ${bit}],检测${Green} 可以 ${Font}搭建。"
 	fi
 }
 optimize(){
@@ -86,19 +88,41 @@ optimize(){
 	echo "* hard nproc 65535" >> /etc/security/limits.conf
 	sysctl -p
 }
-node_install_start(){
+node_install_start_for_centos(){
 	yum -y groupinstall "Development Tools"
 	yum install unzip zip git iptables -y
 	yum update nss curl iptables -y
 	wget --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
 	tar xf libsodium-1.0.18.tar.gz && cd libsodium-1.0.18
-	./configure && make -j2 && make install
+	./configure --disable-maintainer-mode && make -j2 && make install
 	echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
 	ldconfig
+	clear
+	[[ ! -e ${Libsodiumr_file} ]] && echo -e "${Error} libsodium 安装失败 !" && exit 1
+	echo && echo -e "${Info} libsodium 安装成功 !" && echo
 	cd /root
 	yum -y install python-setuptools
 	easy_install pip
-	git clone https://github.com/tonydan6324/ssrmu.git "/root/shadowsocks"
+	git clone ${Github} "/root/shadowsocks"
+	cd shadowsocks
+	pip install -r requirements.txt
+	pip install cymysql
+	cp apiconfig.py userapiconfig.py
+	cp config.json user-config.json
+}
+node_install_start_for_debian(){
+	apt-get update -y
+	apt-get install git curl iptables unzip zip build-essential -y
+	wget --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
+	tar xf libsodium-1.0.18.tar.gz && cd libsodium-1.0.18
+	./configure --disable-maintainer-mode && make -j2 && make install
+	ldconfig
+	clear
+	[[ ! -e ${Libsodiumr_file} ]] && echo -e "${Error} libsodium 安装失败 !" && exit 1
+	echo && echo -e "${Info} libsodium 安装成功 !" && echo
+	cd /root
+	apt-get install python-pip -y
+	git clone ${Github} "/root/shadowsocks"
 	cd shadowsocks
 	pip install -r requirements.txt
 	pip install cymysql
@@ -107,15 +131,17 @@ node_install_start(){
 }
 api(){
     clear
-	# 取消文件数量限制
-	sed -i '$a * hard nofile 512000\n* soft nofile 512000' /etc/security/limits.conf
 	echo -e "如果以下手动配置错误，请在${config}手动编辑修改"
 	read -p "请输入你的对接域名或IP(例如:http://www.baidu.com 默认为本机对接): " WEBAPI_URL
 	read -p "请输入muKey(在你的配置文件中 默认marisn):" WEBAPI_TOKEN
 	read -p "请输入测速周期(回车默认为每6小时测速):" SPEEDTEST
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
-	node_install_start
+	if [[ ${release} == "centos" ]];then
+	node_install_start_for_centos
+	else
+	node_install_start_for_debian
+	fi
 	cd /root/shadowsocks
 	echo -e "modify Config.py...\n"
 	get_ip
@@ -134,8 +160,6 @@ api(){
 }
 db(){
     clear
-	# 取消文件数量限制
-	sed -i '$a * hard nofile 512000\n* soft nofile 512000' /etc/security/limits.conf
 	echo -e "如果以下手动配置错误，请在${config}手动编辑修改"
 	read -p "请输入你的对接数据库IP(例如:127.0.0.1 如果是本机请直接回车): " MYSQL_HOST
 	read -p "请输入你的数据库名称(默认sspanel):" MYSQL_DB
@@ -144,7 +168,11 @@ db(){
 	read -p "请输入你的数据库密码(默认root):" MYSQL_PASS
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
-	node_install_start
+	if [[ ${release} == "centos" ]];then
+	node_install_start_for_centos
+	else
+	node_install_start_for_debian
+	fi
 	cd /root/shadowsocks
 	echo -e "modify Config.py...\n"
 	get_ip
@@ -167,7 +195,7 @@ db(){
 clear
 check_system
 echo -e "\033[1;5;31m请选择对接模式：\033[0m"
-echo -e "1.API对接模式(不支持)"
+echo -e "1.API对接模式"
 echo -e "2.数据库对接模式"
 read -t 30 -p "选择：" NODE_MS
 case $NODE_MS in
@@ -182,6 +210,7 @@ case $NODE_MS in
 			exit 1
 			;;
 esac
+if [[ ${release} == "centos" ]];then
 #关闭CentOS7的防火墙
 systemctl stop firewalld.service
 systemctl disable firewalld.service
@@ -191,10 +220,11 @@ iptables -X
 iptables -I INPUT -p tcp -m tcp --dport 22:65535 -j ACCEPT
 iptables -I INPUT -p udp -m udp --dport 22:65535 -j ACCEPT
 iptables-save >/etc/sysconfig/iptables
-#删除libsodium
-cd /root && rm -rf libsodium*
 echo 'iptables-restore /etc/sysconfig/iptables' >> /etc/rc.local
 chmod +x /etc/rc.d/rc.local && chmod +x /etc/rc.local
+fi
+#删除libsodium
+cd /root && rm -rf libsodium*
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime -r >/dev/null 2>&1
 clear
 echo -e "${GreenBG} 正在优化系统内核参数中...请稍后... ${Font}"
@@ -202,7 +232,11 @@ optimize
 clear
 echo -e "${GreenBG} 将后端写入服务中中...请稍后... ${Font}"
 sleep 2
+if [[ ${release} == "centos" ]];then
 cp /root/shadowsocks/ssr.service /usr/lib/systemd/system/ssr.service
+else
+cp /root/shadowsocks/ssr.service /lib/systemd/system/ssr.service
+fi
 systemctl daemon-reload
 systemctl start ssr
 systemctl enable ssr
@@ -213,4 +247,3 @@ else
 	echo -e "请检查是否为Centos 7.x系统、检查配置文件是否正确、检查是否代码错误请反馈"
 	exit 1
 fi
-systemctl status ssr
