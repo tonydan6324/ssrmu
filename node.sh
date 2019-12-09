@@ -229,7 +229,6 @@ cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime -r >/dev/null 2>&1
 clear
 echo -e "${GreenBG} 正在优化系统内核参数中...请稍后... ${Font}"
 optimize
-clear
 echo -e "${GreenBG} 将后端写入服务中中...请稍后... ${Font}"
 sleep 2
 if [[ ${release} == "centos" ]];then
