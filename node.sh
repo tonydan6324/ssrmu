@@ -246,3 +246,12 @@ else
 	echo -e "请检查是否为Centos 7.x系统、检查配置文件是否正确、检查是否代码错误请反馈"
 	exit 1
 fi
+stdout() {
+    echo -e "\033[32m$1\033[0m"
+}
+stdout "启动命令：systemctl start ssr"
+stdout "停止命令：systemctl stop ssr"
+stdout "重启命令：systemctl restart ssr"
+stdout "开启自启：systemctl enable ssr"
+stdout "关闭自启：systemctl disable ssr"
+stdout "查看状态：systemctl status ssr"
