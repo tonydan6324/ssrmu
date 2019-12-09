@@ -330,8 +330,8 @@ class IPNetwork(object):
             while (ip & 1) == 0 and ip is not 0:
                 ip >>= 1
                 prefix_size += 1
-            logging.warn("You did't specify CIDR routing prefix size for %s, "
-                         "implicit treated as %s/%d" % (addr, addr, addr_len))
+            #logging.warn("You did't specify CIDR routing prefix size for %s, "
+                         #"implicit treated as %s/%d" % (addr, addr, addr_len))
         elif block[1].isdigit() and int(block[1]) <= addr_len:
             prefix_size = addr_len - int(block[1])
             ip >>= prefix_size
