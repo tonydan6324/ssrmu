@@ -94,7 +94,7 @@ node_install_start_for_centos(){
 	yum update nss curl iptables -y
 	wget --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
 	tar xf libsodium-1.0.18.tar.gz && cd libsodium-1.0.18
-	./configure --disable-maintainer-mode && make -j2 && make install
+	./configure && make -j2 && make install
 	echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
 	ldconfig
 	clear
@@ -115,7 +115,7 @@ node_install_start_for_debian(){
 	apt-get install git curl iptables unzip zip build-essential -y
 	wget --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
 	tar xf libsodium-1.0.18.tar.gz && cd libsodium-1.0.18
-	./configure --disable-maintainer-mode && make -j2 && make install
+	./configure && make -j2 && make install
 	ldconfig
 	clear
 	[[ ! -e ${Libsodiumr_file} ]] && echo -e "${Error} libsodium 安装失败 !" && exit 1
