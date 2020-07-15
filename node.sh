@@ -90,7 +90,7 @@ optimize(){
 }
 node_install_start_for_centos(){
 	yum -y groupinstall "Development Tools"
-	yum install unzip zip git iptables -y
+	yum install unzip ntpdate zip git iptables -y
 	yum update nss curl iptables -y
 	wget --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
 	tar xf libsodium-1.0.18.tar.gz && cd libsodium-1.0.18
@@ -112,7 +112,7 @@ node_install_start_for_centos(){
 }
 node_install_start_for_debian(){
 	apt-get update -y
-	apt-get install git curl iptables unzip zip build-essential -y
+	apt-get install git curl ntpdate iptables unzip zip build-essential -y
 	wget --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
 	tar xf libsodium-1.0.18.tar.gz && cd libsodium-1.0.18
 	./configure && make -j2 && make install
@@ -226,6 +226,9 @@ fi
 #删除libsodium
 cd /root && rm -rf libsodium*
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime -r >/dev/null 2>&1
+timedatectl set-timezone Asia/Shanghai
+timedatectl
+ntpdate -u cn.pool.ntp.org
 clear
 echo -e "${GreenBG} 正在优化系统内核参数中...请稍后... ${Font}"
 optimize
