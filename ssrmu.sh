@@ -134,7 +134,6 @@ api(){
 	echo -e "如果以下手动配置错误，请在${config}手动编辑修改"
 	read -p "请输入你的对接域名或IP(例如:http://www.baidu.com 默认为本机对接): " WEBAPI_URL
 	read -p "请输入muKey(在你的配置文件中 默认marisn):" WEBAPI_TOKEN
-	read -p "请输入测速周期(回车默认为每6小时测速):" SPEEDTEST
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
 	if [[ ${release} == "centos" ]];then
@@ -151,8 +150,6 @@ api(){
 	WEBAPI_TOKEN=${WEBAPI_TOKEN:-"marisn"}
 	sed -i '/WEBAPI_TOKEN/c \WEBAPI_TOKEN = '\'${WEBAPI_TOKEN}\''' ${config}
 	#sed -i "s#glzjin#${WEBAPI_TOKEN}#" /root/shadowsocks/userapiconfig.py
-	SPEEDTEST=${SPEEDTEST:-"6"}
-	sed -i '/SPEED/c \SPEEDTEST = '${SPEEDTEST}'' ${config}
 	NODE_ID=${NODE_ID:-"3"}
 	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' ${config}
 	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
