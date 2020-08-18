@@ -198,6 +198,40 @@ api_old(){
 	sed -i "s/shadowsocks/${NODE_LIST}/" ${NODE_LIST}.service
 }
 db_new(){
+	clear
+	echo -e "如果以下手动配置错误，请在${config}手动编辑修改"
+	read -p "请输入你的对接数据库IP(例如:127.0.0.1 如果是本机请直接回车): " MYSQL_HOST
+	read -p "请输入你的数据库名称(默认sspanel):" MYSQL_DB
+	read -p "请输入你的数据库端口(默认3306):" MYSQL_PORT
+	read -p "请输入你的数据库用户名(默认root):" MYSQL_USER
+	read -p "请输入你的数据库密码(默认root):" MYSQL_PASS
+	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
+	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
+	if [[ ${release} == "centos" ]];then
+	node_install_start_for_centos
+	else
+	node_install_start_for_debian
+	fi
+	cd /root/shadowsocks
+	echo -e "modify Config.py...\n"
+	get_ip
+	sed -i '/API_INTERFACE/c \API_INTERFACE = '\'glzjinmod\''' ${config}
+	MYSQL_HOST=${MYSQL_HOST:-"${ip}"}
+	sed -i '/MYSQL_HOST/c \MYSQL_HOST = '\'${MYSQL_HOST}\''' ${config}
+	MYSQL_DB=${MYSQL_DB:-"sspanel"}
+	sed -i '/MYSQL_DB/c \MYSQL_DB = '\'${MYSQL_DB}\''' ${config}
+	MYSQL_USER=${MYSQL_USER:-"root"}
+	sed -i '/MYSQL_USER/c \MYSQL_USER = '\'${MYSQL_USER}\''' ${config}
+	MYSQL_PASS=${MYSQL_PASS:-"root"}
+	sed -i '/MYSQL_PASS/c \MYSQL_PASS = '\'${MYSQL_PASS}\''' ${config}
+	MYSQL_PORT=${MYSQL_PORT:-"3306"}
+	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '${MYSQL_PORT}'' ${config}
+	NODE_ID=${NODE_ID:-"3"}
+	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' ${config}
+	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
+	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' ${config}
+}
+db_old(){
     clear
 	echo -e "如果以下手动配置错误，请在${config}手动编辑修改"
 	read -p "请输入新增节点目录名(如ssrmu,不可为纯数字): " NODE_LIST
@@ -241,6 +275,8 @@ db_new(){
 	sed -i "s/ssr/${NODE_LIST}/" ${NODE_LIST}.service
 	sed -i "s/shadowsocks/${NODE_LIST}/" ${NODE_LIST}.service
 }
+
+
 
 complete_new()
 {
