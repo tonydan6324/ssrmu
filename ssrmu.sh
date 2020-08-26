@@ -183,12 +183,11 @@ api_old(){
 	cp ssr.service ${NODE_LIST}.service
 	echo -e "modify Config.py...\n"
 	get_ip
+	#修复参数替换错误
 	WEBAPI_URL=${WEBAPI_URL:-"http://${ip}"}
 	sed -i '/WEBAPI_URL/c \WEBAPI_URL = '\'${WEBAPI_URL}\''' "/root/${NODE_LIST}/userapiconfig.py"
-	#sed -i "s#https://zhaoj.in#${WEBAPI_URL}#" /root/shadowsocks/userapiconfig.py
 	WEBAPI_TOKEN=${WEBAPI_TOKEN:-"marisn"}
 	sed -i '/WEBAPI_TOKEN/c \WEBAPI_TOKEN = '\'${WEBAPI_TOKEN}\''' "/root/${NODE_LIST}/userapiconfig.py"
-	#sed -i "s#glzjin#${WEBAPI_TOKEN}#" /root/shadowsocks/userapiconfig.py
 	NODE_ID=${NODE_ID:-"3"}
 	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' "/root/${NODE_LIST}/userapiconfig.py"
 	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
