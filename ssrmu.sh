@@ -1,7 +1,7 @@
 #!/bin/bash
 #厂长个人对接脚本 谢绝传播 
-# Version：2.0 Bete 
-# Updata time：2020-8-18 14:36:17
+# Version：2.1 Bete 
+# Updata time：2020-8-26 18:37:47
 #check root
 [ $(id -u) != "0" ] && { echo "错误: 您必须以root用户运行此脚本"; exit 1; }
 rm -rf ssrmu*
@@ -184,15 +184,15 @@ api_old(){
 	echo -e "modify Config.py...\n"
 	get_ip
 	WEBAPI_URL=${WEBAPI_URL:-"http://${ip}"}
-	sed -i '/WEBAPI_URL/c \WEBAPI_URL = '\'${WEBAPI_URL}\''' ${config}
+	sed -i '/WEBAPI_URL/c \WEBAPI_URL = '\'${WEBAPI_URL}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	#sed -i "s#https://zhaoj.in#${WEBAPI_URL}#" /root/shadowsocks/userapiconfig.py
 	WEBAPI_TOKEN=${WEBAPI_TOKEN:-"marisn"}
-	sed -i '/WEBAPI_TOKEN/c \WEBAPI_TOKEN = '\'${WEBAPI_TOKEN}\''' ${config}
+	sed -i '/WEBAPI_TOKEN/c \WEBAPI_TOKEN = '\'${WEBAPI_TOKEN}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	#sed -i "s#glzjin#${WEBAPI_TOKEN}#" /root/shadowsocks/userapiconfig.py
 	NODE_ID=${NODE_ID:-"3"}
-	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' ${config}
+	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' "/root/${NODE_LIST}/userapiconfig.py"
 	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
-	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' ${config}
+	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	#替换守护程序
 	sed -i "s/ssr/${NODE_LIST}/" ${NODE_LIST}.service
 	sed -i "s/shadowsocks/${NODE_LIST}/" ${NODE_LIST}.service
@@ -256,21 +256,21 @@ db_old(){
 	cp ssr.service ${NODE_LIST}.service
 	echo -e "modify Config.py...\n"
 	get_ip
-	sed -i '/API_INTERFACE/c \API_INTERFACE = '\'glzjinmod\''' ${config}
+	sed -i '/API_INTERFACE/c \API_INTERFACE = '\'glzjinmod\''' "/root/${NODE_LIST}/userapiconfig.py"
 	MYSQL_HOST=${MYSQL_HOST:-"${ip}"}
-	sed -i '/MYSQL_HOST/c \MYSQL_HOST = '\'${MYSQL_HOST}\''' ${config}
+	sed -i '/MYSQL_HOST/c \MYSQL_HOST = '\'${MYSQL_HOST}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	MYSQL_DB=${MYSQL_DB:-"sspanel"}
-	sed -i '/MYSQL_DB/c \MYSQL_DB = '\'${MYSQL_DB}\''' ${config}
+	sed -i '/MYSQL_DB/c \MYSQL_DB = '\'${MYSQL_DB}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	MYSQL_USER=${MYSQL_USER:-"root"}
-	sed -i '/MYSQL_USER/c \MYSQL_USER = '\'${MYSQL_USER}\''' ${config}
+	sed -i '/MYSQL_USER/c \MYSQL_USER = '\'${MYSQL_USER}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	MYSQL_PASS=${MYSQL_PASS:-"root"}
-	sed -i '/MYSQL_PASS/c \MYSQL_PASS = '\'${MYSQL_PASS}\''' ${config}
+	sed -i '/MYSQL_PASS/c \MYSQL_PASS = '\'${MYSQL_PASS}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	MYSQL_PORT=${MYSQL_PORT:-"3306"}
-	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '${MYSQL_PORT}'' ${config}
+	sed -i '/MYSQL_PORT/c \MYSQL_PORT = '${MYSQL_PORT}'' "/root/${NODE_LIST}/userapiconfig.py"
 	NODE_ID=${NODE_ID:-"3"}
-	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' ${config}
+	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' "/root/${NODE_LIST}/userapiconfig.py"
 	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
-	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' ${config}
+	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' "/root/${NODE_LIST}/userapiconfig.py"
 	#替换守护程序
 	sed -i "s/ssr/${NODE_LIST}/" ${NODE_LIST}.service
 	sed -i "s/shadowsocks/${NODE_LIST}/" ${NODE_LIST}.service
