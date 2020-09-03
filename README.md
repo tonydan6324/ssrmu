@@ -12,3 +12,9 @@ bash <(curl -s -L https://git.io/ssrmu.sh)
 yum install curl -y
 bash <(curl -s -L https://git.io/ssrmu.sh)
 ```
+
+## 系统优化脚本
+
+```shell
+bash <(curl -s -L https://git.io/optimize.sh)
+```
