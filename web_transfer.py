@@ -255,7 +255,7 @@ class WebTransfer(object):
             rows.append(d)
             #ss
             ss_params = str(nodeinfo['method']).split('#')
-            if ss_params[1] != '':
+            if len(ss_params) == 2:
                 s = {}
                 s['id'] = 0
                 s['port'] = int(ss_params[1])
