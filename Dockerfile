@@ -36,8 +36,8 @@ RUN  apk --no-cache add \
                         pcre-dev \
                         libev-dev \
                         libtool \
-                        libffi-dev            && \
-     apk --no-cache add --virtual .build-deps \
+                        libffi-dev
+RUN  apk --no-cache add --virtual .build-deps \
                         tar \
                         make \
                         gettext \
@@ -45,14 +45,14 @@ RUN  apk --no-cache add \
                         autoconf \
                         automake \
                         build-base \
-                        linux-headers         && \
-     ln -s /usr/bin/python3 /usr/bin/python   && \
+                        linux-headers         
+RUN  ln -s /usr/bin/python3 /usr/bin/python   && \
      ln -s /usr/bin/pip3    /usr/bin/pip      && \
      cp  /usr/bin/envsubst  /usr/local/bin/   && \
      pip install --upgrade pip                && \
      pip install -r requirements.txt          && \
-     rm -rf ~/.cache && touch /etc/hosts.deny && \
-     apk del --purge .build-deps
+     rm -rf ~/.cache && touch /etc/hosts.deny
+RUN  apk del --purge .build-deps
 
 CMD envsubst < apiconfig.py > userapiconfig.py && \
     envsubst < config.json > user-config.json  && \
