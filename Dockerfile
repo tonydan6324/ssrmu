@@ -28,7 +28,6 @@ WORKDIR /root/shadowsocks
 RUN  apk --no-cache add \
                         curl \
                         libintl \
-                        python3-dev \
                         libsodium-dev \
                         openssl-dev \
                         udns-dev \
@@ -41,13 +40,14 @@ RUN  apk --no-cache add \
                         tar \
                         make \
                         gettext \
-                        py3-pip \
                         autoconf \
                         automake \
                         build-base \
                         linux-headers         && \
      cp  /usr/bin/envsubst  /usr/local/bin/   && \
      pip install --upgrade pip                && \
+     echo python -V                           && \
+     echo pip -V                           && \
      pip install -r requirements.txt          && \
      rm -rf ~/.cache && touch /etc/hosts.deny && \
      apk del --purge .build-deps
