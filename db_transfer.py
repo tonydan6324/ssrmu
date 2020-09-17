@@ -389,6 +389,7 @@ class DbTransfer(object):
         #自定义单端口：添加自定义承载用户
         if self.mu_only == 2:
             params = str(nodeinfo[6]).split(',')
+            #ssr
             d = {}
             d['id'] = 0
             d['port'] = int(params[0])
@@ -408,6 +409,28 @@ class DbTransfer(object):
             d['disconnect_ip'] = ''
             d['is_multi_user'] = 1
             rows.append(d)
+            #ss
+            ss_params = str(nodeinfo[6]).split('#')
+            if len(ss_params) == 2:
+                s = {}
+                s['id'] = 0
+                s['port'] = int(ss_params[1])
+                s['u'] = 0
+                s['d'] = 0
+                s['transfer_enable'] = 21474836480000
+                s['passwd'] = params[1]
+                s['enable'] = 1
+                s['method'] = 'aes-128-gcm'
+                s['protocol'] = 'origin'
+                s['protocol_param'] = ''
+                s['obfs'] = 'simple_obfs_http'
+                s['obfs_param'] = ''
+                s['node_speedlimit'] = 0
+                s['forbidden_ip'] = ''
+                s['forbidden_port'] = ''
+                s['disconnect_ip'] = ''
+                s['is_multi_user'] = 1
+                rows.append(s)
 
         # 读取节点IP
         # SELECT * FROM `ss_node`  where `node_ip` != ''
