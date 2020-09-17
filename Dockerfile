@@ -28,6 +28,7 @@ WORKDIR /root/shadowsocks
 RUN  apk --no-cache add \
                         curl \
                         libintl \
+                        python \
                         libsodium-dev \
                         openssl-dev \
                         udns-dev \
@@ -40,6 +41,7 @@ RUN  apk --no-cache add \
                         tar \
                         make \
                         gettext \
+                        python-pip \
                         autoconf \
                         automake \
                         build-base \
