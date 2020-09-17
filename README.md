@@ -18,3 +18,5 @@ bash <(curl -s -L https://git.io/ssrmu.sh)
 ```shell
 bash <(curl -s -L https://git.io/optimize.sh)
 ```
+
+2020.09.17 支持docker
