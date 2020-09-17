@@ -28,7 +28,7 @@ WORKDIR /root/shadowsocks
 RUN  apk --no-cache add \
                         curl \
                         libintl \
-                        python \
+                        python3-dev \
                         libsodium-dev \
                         openssl-dev \
                         udns-dev \
@@ -36,22 +36,22 @@ RUN  apk --no-cache add \
                         pcre-dev \
                         libev-dev \
                         libtool \
-                        libffi-dev            && \
-     apk --no-cache add --virtual .build-deps \
+                        libffi-dev 
+RUN  apk --no-cache add --virtual .build-deps \
                         tar \
                         make \
                         gettext \
-                        python-pip \
+                        py3-pip \
                         autoconf \
                         automake \
                         build-base \
-                        linux-headers         && \
-     cp  /usr/bin/envsubst  /usr/local/bin/   && \
-     pip install --upgrade pip                && \
-     echo python -V                           && \
-     echo pip -V                           && \
-     pip install -r requirements.txt          && \
-     rm -rf ~/.cache && touch /etc/hosts.deny && \
+                        linux-headers
+RUN  ln -s /usr/bin/python3 /usr/bin/python
+RUN  ln -s /usr/bin/pip3    /usr/bin/pip
+RUN  cp  /usr/bin/envsubst  /usr/local/bin/
+RUN  pip install --user --upgrade pip 
+RUN  pip install -r requirements.txt 
+RUN  rm -rf ~/.cache && touch /etc/hosts.deny && \
      apk del --purge .build-deps
 
 CMD envsubst < apiconfig.py > userapiconfig.py && \
