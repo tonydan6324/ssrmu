@@ -52,7 +52,7 @@ RUN  ln -sf /usr/bin/python3 /usr/bin/python
 RUN  ln -sf /usr/bin/pip3    /usr/bin/pip
 RUN  cp  /usr/bin/envsubst  /usr/local/bin/
 RUN  pip install --user --upgrade pip 
-RUN  pip install -r requirements.txt 
+RUN  pip install -r requirements-docker.txt
 RUN  rm -rf ~/.cache && touch /etc/hosts.deny && \
      apk del --purge .build-deps
 
