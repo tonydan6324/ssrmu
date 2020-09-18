@@ -46,8 +46,8 @@ RUN  apk --no-cache add --virtual .build-deps \
                         automake \
                         build-base \
                         linux-headers
-RUN  ln -s /usr/bin/python3 /usr/bin/python
-RUN  ln -s /usr/bin/pip3    /usr/bin/pip
+RUN  ln -sf /usr/bin/python3 /usr/bin/python
+RUN  ln -sf /usr/bin/pip3    /usr/bin/pip
 RUN  cp  /usr/bin/envsubst  /usr/local/bin/
 RUN  pip install --user --upgrade pip 
 RUN  pip install -r requirements.txt 
