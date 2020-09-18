@@ -30,7 +30,6 @@ RUN  apk --no-cache add \
                         gcc \
                         g++  \
                         libintl \
-                        python \
                         python3-dev \
                         libsodium-dev \
                         openssl-dev \
