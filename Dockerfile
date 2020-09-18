@@ -50,7 +50,7 @@ RUN  apk --no-cache add \
      ln -s /usr/bin/pip3    /usr/bin/pip      && \
      cp  /usr/bin/envsubst  /usr/local/bin/   && \
      pip install --upgrade pip                && \
-     pip install -r requirements.txt          && \
+     pip install -r requirements-docker.txt   && \
      rm -rf ~/.cache && touch /etc/hosts.deny && \
      apk del --purge .build-deps
 
