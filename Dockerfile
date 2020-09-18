@@ -22,13 +22,11 @@ ENV NODE_ID=0                     \
     CONNECT_VERBOSE_INFO=0        \
     FAST_OPEN=false
 
-COPY . /root/shadowsocks
-WORKDIR /root/shadowsocks
+COPY . /root/ssrmu
+WORKDIR /root/ssrmu
 
 RUN  apk --no-cache add \
                         curl \
-                        gcc \
-                        g++  \
                         libintl \
                         python3-dev \
                         libsodium-dev \
@@ -38,8 +36,8 @@ RUN  apk --no-cache add \
                         pcre-dev \
                         libev-dev \
                         libtool \
-                        libffi-dev 
-RUN  apk --no-cache add --virtual .build-deps \
+                        libffi-dev            && \
+     apk --no-cache add --virtual .build-deps \
                         tar \
                         make \
                         gettext \
@@ -47,13 +45,13 @@ RUN  apk --no-cache add --virtual .build-deps \
                         autoconf \
                         automake \
                         build-base \
-                        linux-headers
-RUN  ln -sf /usr/bin/python3 /usr/bin/python
-RUN  ln -sf /usr/bin/pip3    /usr/bin/pip
-RUN  cp  /usr/bin/envsubst  /usr/local/bin/
-RUN  pip install --user --upgrade pip 
-RUN  pip install -r requirements-docker.txt
-RUN  rm -rf ~/.cache && touch /etc/hosts.deny && \
+                        linux-headers         && \
+     ln -s /usr/bin/python3 /usr/bin/python   && \
+     ln -s /usr/bin/pip3    /usr/bin/pip      && \
+     cp  /usr/bin/envsubst  /usr/local/bin/   && \
+     pip install --upgrade pip                && \
+     pip install -r requirements.txt          && \
+     rm -rf ~/.cache && touch /etc/hosts.deny && \
      apk del --purge .build-deps
 
 CMD envsubst < apiconfig.py > userapiconfig.py && \
