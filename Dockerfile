@@ -47,7 +47,7 @@ RUN  apk --no-cache add \
                         build-base \
                         linux-headers         && \
      ln -s /usr/bin/python3 /usr/bin/python   && \
-     ln -s /usr/bin/pip3    /usr/bin/pip      && \
+     ln -sf /usr/bin/pip3    /usr/bin/pip      && \
      cp  /usr/bin/envsubst  /usr/local/bin/   && \
      pip install --upgrade pip                && \
      pip install -r requirements-docker.txt   && \
