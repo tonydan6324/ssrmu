@@ -27,7 +27,10 @@ WORKDIR /root/shadowsocks
 
 RUN  apk --no-cache add \
                         curl \
+                        gcc \
+                        g++  \
                         libintl \
+                        python \
                         python3-dev \
                         libsodium-dev \
                         openssl-dev \
