@@ -4,7 +4,7 @@
 # Updata time：2020-8-26 18:37:47
 #check root
 [ $(id -u) != "0" ] && { echo "错误: 您必须以root用户运行此脚本"; exit 1; }
-rm -rf ssrmu*
+unlink $0   #修复删除运行脚本
 #常规变量设置
 #fonts color
 Green="\033[32m" 
