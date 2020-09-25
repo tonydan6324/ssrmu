@@ -1,10 +1,10 @@
 #!/bin/bash
 #厂长个人对接脚本 谢绝传播 
 # Version：2.1 Bete 
-# Updata time：2020-8-26 18:37:47
+# Updata time：2020-9-25 15:11:40
 #check root
 [ $(id -u) != "0" ] && { echo "错误: 您必须以root用户运行此脚本"; exit 1; }
-rm -rf ssrmu*
+unlink $0   #修复删除运行脚本错误
 #常规变量设置
 #fonts color
 Green="\033[32m" 
