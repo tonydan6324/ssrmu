@@ -2,7 +2,7 @@ asn1crypto==0.24.0
 certifi==2018.11.29
 cffi==1.11.5
 chardet==3.0.4
-cryptography==2.3
+cryptography==3.2
 cymysql==0.9.13
 idna==2.7
 ndg-httpsclient==0.5.1
