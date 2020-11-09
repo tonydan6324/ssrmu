@@ -142,7 +142,7 @@ api_new(){
 	read -p "请输入muKey(在你的配置文件中 默认marisn):" WEBAPI_TOKEN
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
-	read -p "是否自动安装定时重启服务(回车默认安装 / N):  " MONITOR
+	read -p "是否自动安装定时重启服务(回车默认安装 Y/N):  " MONITOR
 	MONITOR=${MONITOR:-"Y"} #默认开启监控
 	if [[ ${release} == "centos" ]];then
 	node_install_start_for_centos
@@ -402,6 +402,7 @@ complete_old()
 
 uninstall_node()
 {
+	clear
 	#先检测系统
 	if [[ -f /etc/redhat-release ]]; then
 		release="centos"
