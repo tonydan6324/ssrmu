@@ -441,10 +441,10 @@ uninstall_node()
 	clear
 	#检查是否卸载干净
 	if [ -d "/root/${CATALOGUE}" ]; then
-		echo -e "${Error} 检测文件仍然存在，卸载失败"
+		echo -e "${Notification} 检测文件仍然存在，卸载失败"
 	else
 		echo -e "${OK} 节点已卸载成功"
-		echo -e "${Info} 如果搭建时安装了定时重启任务，请手动执行crontab -e进行删除"
+		echo -e "${Notification} 如果搭建时安装了定时重启任务，请手动执行crontab -e进行删除"
 	fi
 }
 
