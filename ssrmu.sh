@@ -1,7 +1,7 @@
 #!/bin/bash
 #厂长个人对接脚本 谢绝传播 
-# Version：2.1 Bete 
-# Updata time：2020-9-25 15:11:40
+# Version：2.2 Bete 
+# Updata time：2020-11-9 17:39:37
 #check root
 [ $(id -u) != "0" ] && { echo "错误: 您必须以root用户运行此脚本"; exit 1; }
 unlink $0   #修复删除运行脚本错误
@@ -142,6 +142,8 @@ api_new(){
 	read -p "请输入muKey(在你的配置文件中 默认marisn):" WEBAPI_TOKEN
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
+	read -p "是否自动安装定时重启服务(回车默认安装 / N):  " MONITOR
+	MONITOR=${MONITOR:-"Y"} #默认开启监控
 	if [[ ${release} == "centos" ]];then
 	node_install_start_for_centos
 	else
@@ -160,6 +162,14 @@ api_new(){
 	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' ${config}
 	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
 	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' ${config}
+	
+	#监控服务
+	if [[ ${MONITOR} == "Y" || ${MONITOR} == "y" ]];then
+	crontab -l > crontab_monitor
+	echo "30 4 * * * $(which systemctl) restart ssr" >> crontab_monitor
+	crontab crontab_monitor
+	rm -rf crontab_monitor
+	fi
 }
 api_old(){
 	clear
@@ -169,7 +179,9 @@ api_old(){
 	read -p "请输入muKey(在你的配置文件中 默认marisn):" WEBAPI_TOKEN
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
+	read -p "是否自动安装定时重启服务(回车默认安装 Y/N):  " MONITOR
 	NODE_LIST=${NODE_LIST:-"ssrmu"} #默认为ssrmu
+	MONITOR=${MONITOR:-"Y"} #默认开启监控
 	git clone ${Github} "/root/${NODE_LIST}"
 	if [ ! -d "/root/${NODE_LIST}" ]; then
 		echo -e "${Error} 下载资源失败，请检查是否安装Git"
@@ -195,6 +207,14 @@ api_old(){
 	#替换守护程序
 	sed -i "s/ssr/${NODE_LIST}/" ${NODE_LIST}.service
 	sed -i "s/shadowsocks/${NODE_LIST}/" ${NODE_LIST}.service
+	
+	#监控服务
+	if [[ ${MONITOR} == "Y" || ${MONITOR} == "y" ]];then
+	crontab -l > crontab_monitor
+	echo "30 4 * * * $(which systemctl) restart ${NODE_LIST}" >> crontab_monitor
+	crontab crontab_monitor
+	rm -rf crontab_monitor
+	fi
 }
 db_new(){
 	clear
@@ -206,6 +226,8 @@ db_new(){
 	read -p "请输入你的数据库密码(默认root):" MYSQL_PASS
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
+	read -p "是否自动安装定时重启服务(回车默认安装 Y/N):  " MONITOR
+	MONITOR=${MONITOR:-"Y"} #默认开启监控
 	if [[ ${release} == "centos" ]];then
 	node_install_start_for_centos
 	else
@@ -229,6 +251,14 @@ db_new(){
 	sed -i '/NODE_ID/c \NODE_ID = '${NODE_ID}'' ${config}
 	MU_SUFFIX=${MU_SUFFIX:-"microsoft.com"}
 	sed -i '/MU_SUFFIX/c \MU_SUFFIX = '\'${MU_SUFFIX}\''' ${config}
+	
+	#监控服务
+	if [[ ${MONITOR} == "Y" || ${MONITOR} == "y" ]];then
+	crontab -l > crontab_monitor
+	echo "30 4 * * * $(which systemctl) restart ssr" >> crontab_monitor
+	crontab crontab_monitor
+	rm -rf crontab_monitor
+	fi
 }
 db_old(){
     clear
@@ -241,7 +271,9 @@ db_old(){
 	read -p "请输入你的数据库密码(默认root):" MYSQL_PASS
 	read -p "请输入你的节点编号(回车默认为节点ID 3):  " NODE_ID
 	read -p "请输入你的混淆参数[务必与配置文件中一致](回车默认为: microsoft.com):  " MU_SUFFIX
+	read -p "是否自动安装定时重启服务(回车默认安装 Y/N):  " MONITOR
 	NODE_LIST=${NODE_LIST:-"ssrmu"} #默认为ssrmu
+	MONITOR=${MONITOR:-"Y"} #默认开启监控
 	git clone ${Github} "/root/${NODE_LIST}"
 	if [ ! -d "/root/${NODE_LIST}" ]; then
 		echo -e "${Error} 下载资源失败，请检查是否安装Git"
@@ -273,6 +305,14 @@ db_old(){
 	#替换守护程序
 	sed -i "s/ssr/${NODE_LIST}/" ${NODE_LIST}.service
 	sed -i "s/shadowsocks/${NODE_LIST}/" ${NODE_LIST}.service
+	
+	#监控服务
+	if [[ ${MONITOR} == "Y" || ${MONITOR} == "y" ]];then
+	crontab -l > crontab_monitor
+	echo "30 4 * * * $(which systemctl) restart ${NODE_LIST}" >> crontab_monitor
+	crontab crontab_monitor
+	rm -rf crontab_monitor
+	fi
 }
 
 
@@ -328,6 +368,10 @@ complete_new()
 	stdout "开启自启：systemctl enable ssr"
 	stdout "关闭自启：systemctl disable ssr"
 	stdout "查看状态：systemctl status ssr"
+	#监控服务
+	if [[ ${MONITOR} == "Y" || ${MONITOR} == "y" ]];then
+	stdout "监控任务已安装: crontab -l 查看"
+	fi
 }
 
 complete_old()
@@ -350,6 +394,54 @@ complete_old()
 	stdout "开启自启：systemctl enable ${NODE_LIST}"
 	stdout "关闭自启：systemctl disable ${NODE_LIST}"
 	stdout "查看状态：systemctl status ${NODE_LIST}"
+	#监控服务
+	if [[ ${MONITOR} == "Y" || ${MONITOR} == "y" ]];then
+	stdout "监控任务已安装: crontab -l 查看"
+	fi
+}
+
+uninstall_node()
+{
+	#先检测系统
+	if [[ -f /etc/redhat-release ]]; then
+		release="centos"
+	elif cat /etc/issue | grep -q -E -i "debian"; then
+		release="debian"
+	elif cat /etc/issue | grep -q -E -i "ubuntu"; then
+		release="ubuntu"
+	elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
+		release="centos"
+	elif cat /proc/version | grep -q -E -i "debian"; then
+		release="debian"
+	elif cat /proc/version | grep -q -E -i "ubuntu"; then
+		release="ubuntu"
+	elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
+		release="centos"
+    fi
+	read -p "请输入root文件夹下的ss目录名(默认shadowsocks):" CATALOGUE
+	if [ ! -d "/root/${CATALOGUE}" ]; then
+		echo -e "${Error} 检测root文件夹下不存在此目录,请重试"
+		exit 1
+	fi
+	if [[ ${CATALOGUE} == "shadowsocks" ]];then
+		SERVICE="ssr"
+	else
+		SERVICE=${CATALOGUE}
+	fi
+	systemctl stop ${SERVICE}
+	systemctl disable ${SERVICE}
+	rm -rf /root/${CATALOGUE}
+	if [[ ${release} == "centos" ]];then
+		rm -rf /usr/lib/systemd/system/${SERVICE}.service
+	else
+		rm -rf /lib/systemd/system/${SERVICE}.service
+	fi
+	#检查是否卸载干净
+	if [ -d "/root/${CATALOGUE}" ]; then
+		echo -e "${Error} 检测文件仍然存在，卸载失败"
+	else
+		echo -e "${OK} 节点已卸载成功"
+	fi
 }
 
 choose_mode()
@@ -358,6 +450,7 @@ choose_mode()
 	echo -e "\033[1;5;31m请选择对接类型：\033[0m"
 	echo -e "1.新节点对接"
 	echo -e "2.小鸡复用对接(必须使用本脚本已搭建过新节点才行)"
+	echo -e "3.节点卸载"
 	read -t 30 -p "选择：" MODE_MS
 	case $MODE_MS in
 			1)
@@ -373,6 +466,9 @@ choose_mode()
 					exit 1
 				fi
 				select_mode_old
+				;;
+			3)
+				uninstall_node
 				;;
 			*)
 				echo -e "请选择正确对接类型"
