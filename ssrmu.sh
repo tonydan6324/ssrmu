@@ -426,7 +426,7 @@ uninstall_node()
 	if [[ ${CATALOGUE} == "shadowsocks" ]];then
 		SERVICE="ssr"
 	else
-		SERVICE=${CATALOGUE}
+		SERVICE="${CATALOGUE}"
 	fi
 	systemctl stop ${SERVICE}
 	systemctl disable ${SERVICE}
