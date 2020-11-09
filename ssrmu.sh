@@ -419,6 +419,7 @@ uninstall_node()
 		release="centos"
     fi
 	read -p "请输入root文件夹下的ss目录名(默认shadowsocks):" CATALOGUE
+	CATALOGUE=${CATALOGUE:-"shadowsocks"} #默认为shadowsocks
 	if [ ! -d "/root/${CATALOGUE}" ]; then
 		echo -e "${Error} 检测root文件夹下不存在此目录,请重试"
 		exit 1
