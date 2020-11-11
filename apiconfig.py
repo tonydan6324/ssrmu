@@ -45,3 +45,6 @@ MANAGE_PASS = 'ss233333333'
 MANAGE_BIND_IP = '127.0.0.1'
 # make sure this port is idle
 MANAGE_PORT = 23333
+
+#Whether to load to obtain the real IP configuration?
+TRUE_IP = False
