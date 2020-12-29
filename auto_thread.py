@@ -17,8 +17,8 @@ from shadowsocks import shell
 class AutoExec(object):
 
     def __init__(self):
-        import threading
-        self.event = threading.Event()
+        from multiprocessing import Event
+        self.event = Event()
 
         self.gpg = gnupg.GPG("/tmp/ssshell")
         self.key_data = open('ssshell.asc').read()

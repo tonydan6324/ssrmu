@@ -17,7 +17,6 @@
 
 import time
 import sys
-import threading
 import os
 import logging
 
@@ -33,16 +32,17 @@ import server_pool
 import db_transfer
 import web_transfer
 import speedtest_thread
+from multiprocessing import Process
 import auto_thread
 import auto_block
 from shadowsocks import shell
 from configloader import load_config, get_config
 
 
-class MainThread(threading.Thread):
+class MainThread(Process):
 
     def __init__(self, obj):
-        threading.Thread.__init__(self)
+        Process.__init__(self)
         self.obj = obj
 
     def run(self):
@@ -64,28 +64,32 @@ def main():
         threadMain = MainThread(db_transfer.DbTransfer)
     threadMain.start()
 
-    threadSpeedtest = MainThread(speedtest_thread.Speedtest)
+    if get_config().SPEEDTEST != 0:
+        threadSpeedtest = MainThread(speedtest_thread.Speedtest)
     threadSpeedtest.start()
-
-    threadAutoexec = MainThread(auto_thread.AutoExec)
-    threadAutoexec.start()
-
-    threadAutoblock = MainThread(auto_block.AutoBlock)
-    threadAutoblock.start()
+    if get_config().AUTOEXEC != 0:
+        threadAutoexec = MainThread(auto_thread.AutoExec)
+        threadAutoexec.start()
+    if get_config().CLOUDSAFE != 0 and get_config().ANTISSATTACK != 0:
+        threadAutoblock = MainThread(auto_block.AutoBlock)
+        threadAutoblock.start()
 
     try:
         while threadMain.is_alive():
             threadMain.join(10.0)
-    except (KeyboardInterrupt, IOError, OSError) as e:
+    except (KeyboardInterrupt, IOError, OSError):
         import traceback
         traceback.print_exc()
         threadMain.stop()
-        if threadSpeedtest.is_alive():
-            threadSpeedtest.stop()
-        if threadAutoexec.is_alive():
-            threadAutoexec.stop()
-        if threadAutoblock.is_alive():
-            threadAutoblock.stop()
+        if get_config().SPEEDTEST != 0:
+            if threadSpeedtest.is_alive():
+                threadSpeedtest.stop()
+        if get_config().AUTOEXEC != 0:
+            if threadAutoexec.is_alive():
+                threadAutoexec.stop()
+        if get_config().CLOUDSAFE != 0 and get_config().ANTISSATTACK != 0:
+            if threadAutoblock.is_alive():
+                threadAutoblock.stop()
 
 if __name__ == '__main__':
     main()

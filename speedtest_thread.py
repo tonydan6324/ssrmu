@@ -13,8 +13,8 @@ from shadowsocks import common, shell
 class Speedtest(object):
 
     def __init__(self):
-        import threading
-        self.event = threading.Event()
+        from multiprocessing import Event
+        self.event = Event()
         self.has_stopped = False
 
     def speedtest_thread(self):
