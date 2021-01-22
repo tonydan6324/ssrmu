@@ -403,7 +403,7 @@ class ServerPool(object):
                 ret[self.uid_port_table[id]] = tempret[:]
             self.tcp_ipv6_servers_pool[port].mu_connected_iplist_clean()
         #开启TrueIP不上报udp连接IP
-        if self._true_ip_config == True: 
+        if self._true_ip_config == False: 
             if port in self.udp_servers_pool:
                 tempdict = self.udp_servers_pool[port].mu_connected_iplist.copy()
                 for id in tempdict:
