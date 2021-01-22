@@ -71,6 +71,8 @@ class ServerPool(object):
         self.stat_counter = {}
 
         self.uid_port_table = {}
+        #获取TrueIP配置
+        self._true_ip_config = get_config().TRUE_IP
 
     @staticmethod
     def get_instance():
@@ -400,27 +402,30 @@ class ServerPool(object):
                     tempret.append(ip)
                 ret[self.uid_port_table[id]] = tempret[:]
             self.tcp_ipv6_servers_pool[port].mu_connected_iplist_clean()
-        if port in self.udp_servers_pool:
-            tempdict = self.udp_servers_pool[port].mu_connected_iplist.copy()
-            for id in tempdict:
-                if self.uid_port_table[id] not in ret:
-                    ret[self.uid_port_table[id]] = []
-                tempret = ret[self.uid_port_table[id]][:]
-                for ip in tempdict[id]:
-                    tempret.append(ip)
-                ret[self.uid_port_table[id]] = tempret[:]
-            self.udp_servers_pool[port].mu_connected_iplist_clean()
-        if port in self.udp_ipv6_servers_pool:
-            tempdict = self.udp_ipv6_servers_pool[
-                port].mu_connected_iplist.copy()
-            for id in tempdict:
-                if self.uid_port_table[id] not in ret:
-                    ret[self.uid_port_table[id]] = []
-                tempret = ret[self.uid_port_table[id]][:]
-                for ip in tempdict[id]:
-                    tempret.append(ip)
-                ret[self.uid_port_table[id]] = tempret[:]
-            self.udp_ipv6_servers_pool[port].mu_connected_iplist_clean()
+        #开启TrueIP不上报udp连接IP
+        if self._true_ip_config == True: 
+            if port in self.udp_servers_pool:
+                tempdict = self.udp_servers_pool[port].mu_connected_iplist.copy()
+                for id in tempdict:
+                    if self.uid_port_table[id] not in ret:
+                        ret[self.uid_port_table[id]] = []
+                    tempret = ret[self.uid_port_table[id]][:]
+                    for ip in tempdict[id]:
+                        tempret.append(ip)
+                    ret[self.uid_port_table[id]] = tempret[:]
+                self.udp_servers_pool[port].mu_connected_iplist_clean()
+            if port in self.udp_ipv6_servers_pool:
+                tempdict = self.udp_ipv6_servers_pool[
+                    port].mu_connected_iplist.copy()
+                for id in tempdict:
+                    if self.uid_port_table[id] not in ret:
+                        ret[self.uid_port_table[id]] = []
+                    tempret = ret[self.uid_port_table[id]][:]
+                    for ip in tempdict[id]:
+                        tempret.append(ip)
+                    ret[self.uid_port_table[id]] = tempret[:]
+                self.udp_ipv6_servers_pool[port].mu_connected_iplist_clean() 
+        
         return ret
 
     def get_servers_iplist(self):
